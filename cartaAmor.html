@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CartaDigital.py</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 70%;
+            width: 70%;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff99;
+            overflow: hidden;
+            background-color: #0a0a0a;
+        }
+
+        .mensaje-inicial {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ff99;
+            font-size: 24px;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 30px;
+            border: 2px solid #00ff99;
+            border-radius: 10px;
+            z-index: 10;
+            text-align: center;
+            animation: blink 1.2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.2);
+            }
+        }
+
+        .editor {
+            width: 90vw;
+            height: 90vh;
+            margin: auto;
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            background: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(0, 255, 153, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .window-bar {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #2b2b2b;
+            border-bottom: 1px solid #444;
+        }
+
+        .dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .red {
+            background-color: #ff5f56;
+        }
+
+        .yellow {
+            background-color: #ffbd2e;
+        }
+
+        .green {
+            background-color: #27c93f;
+        }
+
+        .filename {
+            color: #ddd;
+            margin-left: auto;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 14px;
+        }
+
+        .code-area {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .line-numbers {
+            background: #151515;
+            padding: 10px 5px;
+            color: #666;
+            text-align: right;
+            user-select: none;
+            overflow-y: auto;
+        }
+
+        .code {
+            padding: 10px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 16px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        #neonCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -2;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0a0a0a;
+        }
+
+        #carta::after {
+            content: "_";
+            animation: blink 1s infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="neonCanvas"></canvas>
+    <div class="background"></div>
+    <div id="inicioMensaje" class="mensaje-inicial">Presiona [ENTER] para ejecutar el programa...</div>
+    <div class="editor">
+        <div class="window-bar">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="filename">CartaAlexDuran.py</span>
+        </div>
+
+        <div class="code-area">
+            <div class="line-numbers" id="lineNumbers"></div>
+            <pre class="code" id="carta"></pre>
+        </div>
+    </div>
+
+    <script>
+        const carta = `# CartaDigital.py
+# Programa escrito una noche después de muchas palabras guardadas...
+
+Hay algo que nos une a todos, sin excepción.
+Incluso a aquellos que aparentan ser invencibles: el miedo.
+
+Nadie está exento. Se manifiesta en cada decisión, en cada duda,
+en cada noche en la que cuestionamos si realmente somos quienes decimos ser.
+
+Pero he decidido ponerle fin a esa incertidumbre.
+Me cansé de vivir con límites autoimpuestos.
+Me cansé de vivir con miedo.
+`;
+
+        let index = 0;
+        const speed = 20;
+        const cartaEl = document.getElementById("carta");
+        const lineNumbers = document.getElementById("lineNumbers");
+        const mensajeInicial = document.getElementById("inicioMensaje");
+
+        let escribiendo = false;
+
+        function escribir() {
+            if (index < carta.length) {
+                cartaEl.textContent += carta.charAt(index);
+                updateLineNumbers();
+                index++;
+                setTimeout(escribir, speed);
+            }
+        }
+
+        function updateLineNumbers() {
+            const lines = cartaEl.textContent.split("\n").length;
+            lineNumbers.innerHTML = "";
+            for (let i = 1; i <= lines; i++) {
+                lineNumbers.innerHTML += i + "<br>";
+            }
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if (!escribiendo && e.key === "Enter") {
+                escribiendo = true;
+                mensajeInicial.style.display = "none";
+                escribir();
+            }
+        });
+        const canva = document.get
+        const canvas = document.getElementById("neonCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let lines = [];
+
+        function createLine() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                length: Math.random() * 100 + 50,
+                speed: Math.random() * 1.5 + 0.5,
+                angle: Math.random() * Math.PI * 2,
+                width: Math.random() * 2 + 1,
+                color: `hsl(${Math.random() * 360}, 100%, 70%)`
+            };
+        }
+
+        for (let i = 0; i < 70; i++) {
+            lines.push(createLine());
+        }
+
+        function drawLines() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = "lighter";
+
+            lines.forEach(line => {
+                const x2 = line.x + Math.cos(line.angle) * line.length;
+                const y2 = line.y + Math.sin(line.angle) * line.length;
+
+                ctx.beginPath();
+                ctx.moveTo(line.x, line.y);
+                ctx.lineTo(x2, y2);
+                ctx.lineWidth = line.width;
+                ctx.strokeStyle = line.color;
+                ctx.shadowColor = line.color;
+                ctx.shadowBlur = 15;
+                ctx.stroke();
+
+                line.x += Math.cos(line.angle) * line.speed;
+                line.y += Math.sin(line.angle) * line.speed;
+
+                // Reset line when it goes out of bounds
+                if (line.x < 0 || line.x > canvas.width || line.y < 0 || line.y > canvas.height) {
+                    Object.assign(line, createLine());
+                }
+            });
+
+            requestAnimationFrame(drawLines);
+        }
+
+        drawLines();
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+    </script>
+</body>
+
+</html>
